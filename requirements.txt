@@ -2,3 +2,9 @@ Flask
 Flask-Session
 psycopg2-binary
 SQLAlchemy
+flask-login
+Flask-WTF
+email_validator
+request
+flask-sqlalchemy
+

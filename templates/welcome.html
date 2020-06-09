@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>welcome</title>
+</head>
+<body>
+{% if current_user.is_authenticated %}
+  Hi {{ current_user.name }}!
+{% endif %}
+<p>bienvenido a su mundo de libros</p>
+
+</body>
+</html>
