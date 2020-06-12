@@ -1,3 +1,4 @@
+import csv
 import os
 import base64
 
@@ -111,10 +112,27 @@ def login():
 #manager
 
 def main():
+    db.drop_all()
     db.create_all()
+    with open("books.csv") as f:
+        next(f)#skip header
+        reader=csv.reader(f)
+        for isbn,title,author,year in reader:
+            db_session.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn, :title, :author, :year)",
+                       {"isbn": isbn, "title": title, "author": author, "year": int(year)})
+            db_session.commit()
+
+
+
 
 if __name__== "__main__":
     with app.app_context():
-        #main()
+        main()
         app.run("0.0.0.0",port=5000,debug=True)
 
+
+
+
+
+
+#api key 8fuK25fWwRuPi04o6cD1pA
