@@ -1,3 +1,4 @@
+import csv
 import os
 import base64
 
@@ -110,11 +111,19 @@ def login():
 
 #manager
 
-def main():
-    db.create_all()
+
+
+
+
 
 if __name__== "__main__":
     with app.app_context():
         #main()
-        app.run("0.0.0.0",port=5000,debug=True)
+        app.run("127.0.0.1",port=5000,debug=True)
 
+
+
+
+
+
+#api key 8fuK25fWwRuPi04o6cD1pA
