@@ -57,8 +57,29 @@ def index():
 
 @app.route("/welcome",methods=["GET", "POST"])
 def welcome():
-    return render_template("welcome.html")
 
+    option = request.form.get('options')
+    value_to_search = "%"+str(request.form.get("buscador"))+"%"
+    search_result = []
+
+    if option == "ISBN":
+        #search_result =book.query.filter_by(isbn=value_to_search).all()
+        search_result = db_session.execute(f"SELECT * FROM books WHERE isbn LIKE '{value_to_search}'").fetchall()
+    if option == "TITLE":
+        #search_result =book.query.filter_by(title=value_to_search).all()
+        search_result = db_session.execute(f"SELECT * FROM books WHERE title LIKE '{value_to_search}'").fetchall()
+
+    if option == "AUTHOR":
+        #search_result =book.query.filter_by(author = value_to_search).all()
+        search_result = db_session.execute(f"SELECT * FROM books WHERE author LIKE '{value_to_search}'").fetchall()
+
+    if len(search_result) == 0:
+        return render_template("welcome.html",form=SearchForm())
+    return render_template("results.html",search_result=search_result)
+
+@app.route("/results",methods=["GET", "POST"])
+def results():
+    return render_template("results.html")
 #manager
 @login_manager.user_loader
 def load_user(user_id):
@@ -78,7 +99,7 @@ def show_signup_form():
         user=User(name=name,email=email,password=password)
         db.session.add(user)
         db.session.commit()
-        return render_template("welcome.html",)
+        return render_template("welcome.html",form=SearchForm())
     return render_template("signup_form.html",form=form)
 
    
@@ -108,6 +129,8 @@ def login():
         login_user(user, remember=form.remember_me.data)
         return redirect(url_for('welcome'))
     return render_template('login_form.html', title='Sign In', form=form)
+
+
 
 #manager
 

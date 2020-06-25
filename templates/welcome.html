@@ -9,6 +9,24 @@
   Hi {{ current_user.name }}!
 {% endif %}
 <p>bienvenido a su mundo de libros</p>
+<p>que libro desea buscar?</p>
+<form action="" method="post" >
+         {{form.hidden_tag()}}
+
+         <p>
+             Options:
+             {{form.options()}}
+
+         </p>
+         <div>
+
+            {{ form.buscador }}<br>
+
+
+        </div>
+        {{ form.search_result }}
+
+     </form>
 
 </body>
 </html>

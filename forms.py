@@ -1,6 +1,6 @@
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField,RadioField
 from wtforms.validators import DataRequired, Email, Length
 
 class SignupForm(FlaskForm):
@@ -15,3 +15,8 @@ class LoginForm(FlaskForm):
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Recuérdame')
     submit = SubmitField('Login')
+
+class SearchForm(FlaskForm):
+    options=RadioField('options', choices=[("ISBN"), ("TITLE"), ("AUTHOR")])
+    buscador = StringField("")
+    search_result = SubmitField('search_result')
