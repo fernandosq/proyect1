@@ -12,8 +12,6 @@ class book(db.Model):
     author = db.Column(db.String)
     year = db.Column(db.Integer)
 
-
-
 class User(db.Model, UserMixin):
     __tablename__ = 'book_user'
     id = db.Column(db.Integer, primary_key=True)
@@ -39,3 +37,10 @@ class User(db.Model, UserMixin):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
+class reviews (db.Model):
+    __tablename__="reviews_table"
+    id = db.Column(db.Integer, primary_key=True)
+    review_text=db.Column(db.String())
+    review_score = db.Column(db.Integer)
+    date=db.Column(db.DateTime())
+    user= db.Column(db.Integer, db.ForeignKey(f'{User.__tablename__}.name'))

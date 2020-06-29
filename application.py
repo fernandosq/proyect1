@@ -1,7 +1,7 @@
 import csv
 import os
 import base64
-
+import requests
 import flask
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, session, url_for, request, render_template, flash
@@ -47,7 +47,10 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db_session = scoped_session(sessionmaker(bind=engine))
 
-
+#manager
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get_by_id(int(user_id))
 
 
 #index_inicital
@@ -77,13 +80,14 @@ def welcome():
         return render_template("welcome.html",form=SearchForm())
     return render_template("results.html",search_result=search_result)
 
-@app.route("/results",methods=["GET", "POST"])
-def results():
-    return render_template("results.html")
-#manager
-@login_manager.user_loader
-def load_user(user_id):
-    return User.get_by_id(int(user_id))
+@app.route("/search/<int:isbn>")
+def book(isbn):
+    book_data=db_session.execute(f"SELECT * FROM books WHERE isbn ='{isbn}'").fetchone()
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "8fuK25fWwRuPi04o6cD1pA", "isbns": book_data["isbn"]})
+    good_read_data=res.json()
+    good_read_data_average_data=good_read_data["books"][0]["average_rating"]
+    good_read_data_ratings_count = good_read_data["books"][0]["ratings_count"]
+    return render_template("book.html",good_read_data_average_data=good_read_data_average_data,good_read_data_ratings_count=good_read_data_ratings_count)
 
 
 

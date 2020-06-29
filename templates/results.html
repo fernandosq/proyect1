@@ -5,7 +5,12 @@
     <title> search_result</title>
 </head>
 <body>
-{{ search_result}}
-
+<ul>
+{% for book in search_result %}
+    <li>
+        <a href="{{ url_for('book',isbn=book.isbn) }}"> book.title </a>'
+    </li>
+ {% endfor %}
+ </ul>
 </body>
 </html>
