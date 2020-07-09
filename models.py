@@ -1,6 +1,7 @@
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from datetime import datetime
 from werkzeug.security import generate_password_hash, check_password_hash
 
 db=SQLAlchemy()
@@ -20,6 +21,20 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(128), nullable=False)
     is_admin = db.Column(db.Boolean, default=False)
 
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    def get_id(self):
+        return str(self.id)
+
+    def is_admin(self):
+        return self.is_admin
     def __repr__(self):
         return f'<User {self.email}>'
     def set_password(self, password):
@@ -37,10 +52,11 @@ class User(db.Model, UserMixin):
     def get_by_email(email):
         return User.query.filter_by(email=email).first()
 
-class reviews (db.Model):
+class Review (db.Model):
     __tablename__="reviews_table"
-    id = db.Column(db.Integer, primary_key=True)
+    id=db.Column(db.Integer,primary_key=True)
+    id_review = db.Column(db.String(), db.ForeignKey(f'{book.__tablename__}.isbn'))
     review_text=db.Column(db.String())
     review_score = db.Column(db.Integer)
-    date=db.Column(db.DateTime())
-    user= db.Column(db.Integer, db.ForeignKey(f'{User.__tablename__}.name'))
+    date=db.Column(db.DateTime,default=datetime.utcnow)
+    user= db.Column(db.Integer, db.ForeignKey(f'{User.__tablename__}.id'))

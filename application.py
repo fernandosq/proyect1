@@ -4,7 +4,7 @@ import base64
 import requests
 import flask
 from flask_sqlalchemy import SQLAlchemy
-from flask import Flask, session, url_for, request, render_template, flash
+from flask import Flask, session, url_for, request, render_template, flash, jsonify
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -14,6 +14,7 @@ from werkzeug.urls import url_parse
 from werkzeug.utils import redirect
 from forms import *
 from models import *
+
 
 
 
@@ -47,12 +48,9 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db_session = scoped_session(sessionmaker(bind=engine))
 
-#manager
 @login_manager.user_loader
-def load_user(user_id):
-    return User.get_by_id(int(user_id))
-
-
+def load_user(id):
+    return User.get_by_id(int(id))
 #index_inicital
 @app.route("/",methods=["GET", "POST"])
 def index():
@@ -78,16 +76,41 @@ def welcome():
 
     if len(search_result) == 0:
         return render_template("welcome.html",form=SearchForm())
+
     return render_template("results.html",search_result=search_result)
 
-@app.route("/search/<int:isbn>")
+@app.route("/search/<isbn>", methods=['GET',"POST"])
 def book(isbn):
+    """this def explain all it"""
     book_data=db_session.execute(f"SELECT * FROM books WHERE isbn ='{isbn}'").fetchone()
     res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "8fuK25fWwRuPi04o6cD1pA", "isbns": book_data["isbn"]})
     good_read_data=res.json()
     good_read_data_average_data=good_read_data["books"][0]["average_rating"]
     good_read_data_ratings_count = good_read_data["books"][0]["ratings_count"]
-    return render_template("book.html",good_read_data_average_data=good_read_data_average_data,good_read_data_ratings_count=good_read_data_ratings_count)
+    #show_reviews_info
+    review_text=db_session.execute(f"SELECT review_text FROM reviews_table WHERE id_review ='{book_data.isbn}'").fetchall()
+    review_count = db.session.execute(f"SELECT review_text FROM reviews_table WHERE id_review ='{book_data.isbn}'").rowcount
+    average_score = db.session.execute(f"SELECT review_score FROM reviews_table WHERE id_review ='{book_data.isbn}'").fetchone()
+
+
+
+    #form_create_review
+    form = ReviewsForm()
+    if form.submit:
+        review_tex = request.form.get("review_tex")
+        review_score = request.form.get("review_score")
+        review = Review(review_score=review_score,review_text=review_tex,id_review=book_data.isbn)
+        db.session.add(review)
+        db.session.commit()
+
+
+    return render_template("book.html", good_read_data_average_data=good_read_data_average_data,
+                           good_read_data_ratings_count=good_read_data_ratings_count,
+                           book_data=book_data,
+                           form=form,
+                           review_text=review_text,
+                           review_count=review_count,
+                           average_score=average_score)
 
 
 
@@ -100,7 +123,7 @@ def show_signup_form():
         name=request.form.get("name")
         email= request.form.get("email")
         password = request.form.get("password")
-        user=User(name=name,email=email,password=password)
+        user=User(name=name,email=email,password=generate_password_hash(password))
         db.session.add(user)
         db.session.commit()
         return render_template("welcome.html",form=SearchForm())
@@ -120,25 +143,42 @@ def logout():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('welcome'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        password = form.password.data
-        user = User.get_by_email(email)
-        if user.check_password(password):
-            flash('Invalid username or password')
-            return redirect(url_for('login'))
-        login_user(user, remember=form.remember_me.data)
-        return redirect(url_for('welcome'))
-    return render_template('login_form.html', title='Sign In', form=form)
-
+    if request.method == "POST":
+        form = LoginForm()
+        if form.validate_on_submit():
+            email = form.email.data
+            password = form.password.data
+            user_information=db_session.execute(f"SELECT * FROM book_user WHERE email ='{email}'").fetchall()
+            if check_password_hash(user_information[0][3],password):
+               session["id"]=user_information[0][0]
+               session["name"] = user_information[0][1]
+               session["email"] = user_information[0][2]
+               session.modified=True
+               form_search = SearchForm()
+               return redirect(url_for('welcome'))
+    else:
+        form = LoginForm()
+        return render_template('login_form.html', form=form)
 
 
 #manager
 
+@app.route('/api/<isbn>')
+def api(isbn):
+    book_search=db_session.execute(f"SELECT * FROM books WHERE isbn ='{isbn}'").fetchone()
+    review_count=db.session.execute(f"SELECT review_text FROM reviews_table WHERE id_review ='{book_search.isbn}'").rowcount
+    average_score=db.session.execute(f"SELECT review_score FROM reviews_table WHERE id_review ='{book_search.isbn}'").fetchone()
 
+    return jsonify(
+        {
+            "title": book_search.title,
+            "author": book_search.author,
+            "year":book_search.year,
+            "isbn": book_search.isbn,
+            "review_count": review_count,
+            "average_score": average_score
+        }
+    )
 
 
 
