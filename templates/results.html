@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> search_result</title>
+</head>
+<body>
+<p></p>
+<ul>
+{% for book in search_result %}
+    <li>
+        <a href="{{ url_for('book',isbn=book.isbn) }}"class="info_book" > YEAR:{{book.year}}, TITLE:{{book.title}}, AUTHOR: {{book.author}}, ISBN: {{book.isbn}} </a>
+    </li>
+ {% endfor %}
+ </ul>
+</body>
+</html>

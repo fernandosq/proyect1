@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div class="info_book">
+    YEAR:{{book_data.year}}, TITLE:{{book_data.title}}, AUTHOR: {{book_data.author}}, ISBN: {{book_data.isbn}}
+</div>
+
+<div class="info_good_read">
+<p>good read data_average data:{{good_read_data_average_data}}</p>
+<p>good read data ratings count:{{good_read_data_ratings_count}}</p>
+</div>
+<div class="show_reviews_info">
+    <p>show_reviews_info</p>
+    <p>{{review_text}}</p>
+    <p>{{review_count}}</p>
+    <p>{{average_score}}</p>
+</div>
+<div class="make_review">
+    <form action="" method="post" >
+
+
+         <p>
+             score:
+             {{form.review_score}}
+
+         </p>
+         <div>
+
+            {{ form.review_tex }}<br>
+
+
+        </div>
+        {{ form.submit}}
+
+     </form>
+</div>
+</body>
+</html>
