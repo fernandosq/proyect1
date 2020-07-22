@@ -1,16 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='general_style.css') }}">
 <head>
     <meta charset="UTF-8">
     <title>welcome</title>
 </head>
 <body background="../static/undraw_Bibliophile_hwqc.png">
 
-  Hi {{ name }}!
+ <div class="saludo_name"> Hi {{ name }}!</div>
 
-<p>bienvenido a su mundo de libros</p>
-<p>que libro desea buscar?</p>
-<form action="" method="post" >
+<p class="text">Bienvenido a su mundo de libros</p>
+<p class="text">Que libro desea buscar?</p>
+<form class="form_search" action="" method="post" >
          {{form.hidden_tag()}}
 
          <p>
