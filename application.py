@@ -144,7 +144,6 @@ def login():
                session["name"] = user_information[0][1]
                session["email"] = user_information[0][2]
                session.modified = True
-               print(session["name"])
                return redirect(url_for('welcome'))
     else:
         form = LoginForm()
