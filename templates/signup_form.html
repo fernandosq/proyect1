@@ -1,29 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='general_style.css') }}">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
-<div>
+<div class="form-group">
          <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         {{ form.csrf_token }}
-        <div>
+        <div class="form-control">
             {{ form.name.label }}
             {{ form.name(size=64) }}<br>
             {% for error in form.name.errors %}
             <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </div>
-        <div>
+        <div class="form-control">
             {{ form.email.label }}
             {{ form.email }}<br>
             {% for error in form.email.errors %}
             <span style="color: red;">{{ error }}</span>
             {% endfor %}
         </div>
-        <div>
+        <div class="form-control">
             {{ form.password.label }}
             {{ form.password }}<br>
             {% for error in form.password.errors %}

@@ -2,18 +2,19 @@
 <html lang="en">
 
 <head>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='general_style.css') }}">
     <meta charset="UTF-8">
     <title>Welcome</title>
 </head>
 <body background="../static/undraw_Bibliophile_hwqc.png">
-
+<div class=" index_text">
 <div class="registrer">¿No tienes cuenta?
     <a class="url_register" href="{{ url_for('show_signup_form') }}">Regístrate</a>
 </div>
 <div class="login">Ya eres de nuestros lectores
     <a class="url_login" href="{{ url_for('login') }}">Accede a tu usuario</a>
 </div>
-
+</div>
 </body>
 </html>

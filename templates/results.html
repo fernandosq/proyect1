@@ -1,17 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='general_style.css') }}">
+<body >
 <head>
     <meta charset="UTF-8">
     <title> search_result</title>
 </head>
 <body>
 <p></p>
-<ul>
+
+<ul class="list-group_result">>
 {% for book in search_result %}
-    <li>
-        <a href="{{ url_for('book',isbn=book.isbn) }}"class="info_book" > YEAR:{{book.year}}, TITLE:{{book.title}}, AUTHOR: {{book.author}}, ISBN: {{book.isbn}} </a>
+    <li class="list-group-item">
+        <a href="{{ url_for('book',isbn=book.isbn) }}"class="list-group-item" > YEAR:{{book.year}}, TITLE:{{book.title}}, AUTHOR: {{book.author}}, ISBN: {{book.isbn}} </a>
     </li>
  {% endfor %}
  </ul>
+
 </body>
 </html>
